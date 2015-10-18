@@ -40,8 +40,8 @@ public class ListenerFragment extends Fragment {
     private ImageButton addSong;
     private String song_id;
     private String query;
-    private static String client_id;
     private EditText inputText;
+    private boolean emptyQueue;
     ArrayAdapter<String> adapter;
     private static ArrayList<String> songArray = new ArrayList<>();
 
@@ -123,12 +123,10 @@ public class ListenerFragment extends Fragment {
     public class BackgroundTaskButton extends AsyncTask<Void, Void, Void> {
         protected Void doInBackground(Void... params) {
 
-            client_id = "@key/client_ID";
-
             /* Get Query from Text Box */
 
             Log.i("inputText", query);
-
+            String client_id=getResources().getString(R.string.client_ID);
             String soundcloud_query_url = "http://api.soundcloud.com/tracks.json?client_id=" + client_id + "&q=" +
                     query +
                     "&limit=1";
@@ -158,7 +156,6 @@ public class ListenerFragment extends Fragment {
 
             Log.i("song_id", "" + song_id);
             Log.i("song_title", "" + song_title);
-
             /* Post Song Id to Queue */
 
             client = new OkHttpClient();
@@ -166,7 +163,7 @@ public class ListenerFragment extends Fragment {
             RequestBody body = RequestBody.create(JSON, json);
             Request request = new Request.Builder()
                     .url("http://104.236.76.46:8080/api/addSong")
-                    //.url("http://128.61.16.139:8080/api/addSong")
+                            //.url("http://128.61.16.139:8080/api/addSong")
                     .post(body)
                     .build();
             try {
@@ -174,17 +171,19 @@ public class ListenerFragment extends Fragment {
                 String r = response.body().string();
             } catch (Exception e) {
             }
-
             return null;
         }
 
         @Override
         protected void onPostExecute(Void v) {
             adapter.notifyDataSetChanged();
+            if (emptyQueue) {
+                playNextSong();
+            }
         }
     }
 
-    public static void playNextSong() {
+    public void playNextSong() {
 
         final int playtime;
         String token;
@@ -194,8 +193,8 @@ public class ListenerFragment extends Fragment {
         OkHttpClient client = new OkHttpClient();
         try {
             Request request = new Request.Builder()
-//                        .url("http://104.236.76.46:8080/api/getCurrentSong.json")
-                    .url("http://128.61.16.139:8080/api/getCurrentSong.json")
+                    .url("http://104.236.76.46:8080/api/getCurrentSong.json")
+                            //.url("http://128.61.16.139:8080/api/getCurrentSong.json")
                     .build();
             Response response = client.newCall(request).execute();
             json = response.body().string();
@@ -203,9 +202,13 @@ public class ListenerFragment extends Fragment {
             JSONObject jObj = new JSONObject(json);
             songId = jObj.getString("song_id");
             songTitle = jObj.getString("song_title");
+            if (songId.equals("0")) {
+                emptyQueue = true;
+            }
             Log.i("Song Title", songTitle);
             if (songId != "0") {
                 playtime = Integer.parseInt(jObj.getString("playback_time"));
+                String client_id=getResources().getString(R.string.client_ID);
                 String url = "http://api.soundcloud.com/tracks/" + songId + "/stream?client_id=" + client_id;
                 Log.i("&&&&&&&&&", url);
                 MediaPlayer mediaPlayer = new MediaPlayer();
@@ -222,8 +225,8 @@ public class ListenerFragment extends Fragment {
                 mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
             }
             request = new Request.Builder()
-                        .url("http://104.236.76.46:8080/api/getQueue.json")
-                    //.url("http://128.61.16.139:8080/api/getQueue.json")
+                    .url("http://104.236.76.46:8080/api/getQueue.json")
+                            //.url("http://128.61.16.139:8080/api/getQueue.json")
                     .build();
             response = client.newCall(request).execute();
             json = response.body().string();
