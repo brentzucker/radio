@@ -36,7 +36,7 @@ public class ListenerFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private Button addSong;
+    private ImageButton addSong;
     private String song_id;
     private String query;
     String client_id;
@@ -82,7 +82,7 @@ public class ListenerFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_listener, container, false);
         inputText = (EditText) rootView.findViewById(R.id.inputID);
 
-        addSong = (Button) rootView.findViewById(R.id.addSong);
+        addSong = (ImageButton) rootView.findViewById(R.id.addSong);
         addSong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

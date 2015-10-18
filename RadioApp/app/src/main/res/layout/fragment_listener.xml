@@ -18,14 +18,14 @@
                 android:layout_marginTop="5dp"
                 android:background="#eeeeee"/>
 
-        <Button
+        <ImageButton
                 android:layout_width="129dp"
                 android:layout_height="36dp"
                 android:text="Add Song to queue"
                 android:id="@+id/addSong" android:layout_gravity="right|top"
                 android:background="#e6ae27"
                 android:textColor="#00223e"
-                android:layout_marginTop="5dp"/>
+                android:layout_marginTop="5dp" android:src="@drawable/plus"/>
 
     </LinearLayout>
     <TextView
