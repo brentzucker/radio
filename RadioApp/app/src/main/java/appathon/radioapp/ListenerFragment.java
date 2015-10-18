@@ -158,7 +158,7 @@ public class ListenerFragment extends Fragment {
                 response = client.newCall(request).execute();
                 json = response.body().string();
                 jObj = new JSONObject(json);
-                //Log.i("&&&&&&&&&", "foo");
+                Log.i("&&&&&&&&&", "foo");
                 JSONArray jArray = jObj.getJSONArray("song_queue");
                 if(jArray.length()>0){
                 for (int j = 0; j < jArray.length(); j++) {
