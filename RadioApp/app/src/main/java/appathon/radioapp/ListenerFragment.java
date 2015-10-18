@@ -175,6 +175,7 @@ public class ListenerFragment extends Fragment {
             }
             if (emptyQueue) {
                 playNextSong();
+                emptyQueue=false;
             }
             return null;
         }
