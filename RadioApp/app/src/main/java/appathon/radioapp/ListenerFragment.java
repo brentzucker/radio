@@ -13,6 +13,7 @@ import android.widget.*;
 import com.squareup.okhttp.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -90,7 +91,7 @@ public class ListenerFragment extends Fragment {
                 //Log.i("&&&&&&&&&", "button pressed");
                 song_id = (inputText.getText()).toString();
                 //Log.i("entered string", song_id);
-                 query = (inputText.getText()).toString();
+                query = (inputText.getText()).toString();
                 new BackgroundTaskButton().execute();
             }
         });
@@ -109,21 +110,7 @@ public class ListenerFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-
-            /* Get API Key */
-            try {
-                InputStream is = getActivity().getAssets().open("key.txt");
-                byte[] buffer = new byte[is.available()];
-                is.read(buffer);
-                String file = new String(buffer);
-                String line = file.split("\n")[0]; //readFile.nextLine();
-                client_id = line;
-            } catch (Exception e) {
-                Log.e("&&&&&&&", e.getLocalizedMessage());
-            }
-
             playNextSong();
-
             return null;
         }
 
@@ -136,15 +123,16 @@ public class ListenerFragment extends Fragment {
     public class BackgroundTaskButton extends AsyncTask<Void, Void, Void> {
         protected Void doInBackground(Void... params) {
 
-            client_id = "eaa03445fd8b9ffacab3dd6856f936e2";
+            client_id = "@key/client_ID";
 
             /* Get Query from Text Box */
 
             Log.i("inputText", query);
 
-            String soundcloud_query_url = "http://api.soundcloud.com/tracks.json?client_id=" + client_id + "&q=" + query +
+            String soundcloud_query_url = "http://api.soundcloud.com/tracks.json?client_id=" + client_id + "&q=" +
+                    query +
                     "&limit=1";
-            Log.i("souncloud_query_url", soundcloud_query_url);
+            Log.i("soundcloud_query_url", soundcloud_query_url);
 
             /* Query Soundcloud: Get Id of Top Result */
 
@@ -177,8 +165,8 @@ public class ListenerFragment extends Fragment {
             json = "{\"song_id\" : " + song_id + ", \"song_title\": \"" + song_title + "\"}";
             RequestBody body = RequestBody.create(JSON, json);
             Request request = new Request.Builder()
-//                    .url("http://104.236.76.46:8080/api/addSong")
-                    .url("http://128.61.16.139:8080/api/addSong")
+                    .url("http://104.236.76.46:8080/api/addSong")
+                    //.url("http://128.61.16.139:8080/api/addSong")
                     .post(body)
                     .build();
             try {
@@ -186,7 +174,7 @@ public class ListenerFragment extends Fragment {
                 String r = response.body().string();
             } catch (Exception e) {
             }
-            
+
             return null;
         }
 
@@ -234,8 +222,8 @@ public class ListenerFragment extends Fragment {
                 mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
             }
             request = new Request.Builder()
-//                        .url("http://104.236.76.46:8080/api/getQueue.json")
-                    .url("http://128.61.16.139:8080/api/getQueue.json")
+                        .url("http://104.236.76.46:8080/api/getQueue.json")
+                    //.url("http://128.61.16.139:8080/api/getQueue.json")
                     .build();
             response = client.newCall(request).execute();
             json = response.body().string();
