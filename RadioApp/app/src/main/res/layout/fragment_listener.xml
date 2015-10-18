@@ -20,7 +20,8 @@
                 android:background="#eeeeee"
             android:layout_weight="0.91"
             android:layout_marginRight="5dp"
-            android:layout_marginLeft="5dp" />
+            android:layout_marginLeft="5dp"
+            android:hint="Enter Song" />
 
         <ImageButton
                 android:layout_width="40dp"
@@ -56,7 +57,7 @@
         android:layout_marginTop="10dp" />
     </LinearLayout>
     <ListView
-            android:layout_width="wrap_content"
+            android:layout_width="346dp"
             android:layout_height="match_parent"
             android:id="@+id/songList" android:layout_gravity="bottom|center"/>
     <!-- TODO: Update blank fragment layout -->
