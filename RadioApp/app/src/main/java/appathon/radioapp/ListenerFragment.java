@@ -12,9 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import android.widget.Button;
+import android.widget.Toast;
+import com.squareup.okhttp.*;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -31,6 +31,8 @@ import java.util.concurrent.TimeUnit;
  * create an instance of this fragment.
  */
 public class ListenerFragment extends Fragment {
+    public static final MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -40,6 +42,7 @@ public class ListenerFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private Button addSong;
 
     /**
      * Use this factory method to create a new instance of
@@ -76,8 +79,18 @@ public class ListenerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_listener, container, false);
+        addSong = (Button) rootView.findViewById(R.id.addSong);
+        addSong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(getActivity(), "click",Toast.LENGTH_LONG).show();
+                //Log.i("&&&&&&&&&", "button pressed");
+                new BackgroundTaskButton().execute();
+            }
+        });
         new BackgroundTask().execute();
-        return inflater.inflate(R.layout.fragment_listener, container, false);
+        return rootView;
     }
 
 
@@ -86,7 +99,7 @@ public class ListenerFragment extends Fragment {
         protected String doInBackground(Void... params) {
             String client_id;
             String token;
-            String songId="";
+            String songId;
             String json = "";
             OkHttpClient client = new OkHttpClient();
             try {
@@ -95,7 +108,9 @@ public class ListenerFragment extends Fragment {
                         .build();
                 Response response = client.newCall(request).execute();
                 json = response.body().string();
-//            Scanner readFile = new Scanner(new File("key.txt"));
+                JSONObject jObj = new JSONObject(json);
+                songId = jObj.getString("song_id");
+//              Scanner readFile = new Scanner(new File("key.txt"));
                 InputStream is = getActivity().getAssets().open("key.txt");
                 byte[] buffer = new byte[is.available()];
                 is.read(buffer);
@@ -107,7 +122,6 @@ public class ListenerFragment extends Fragment {
                 String url = "https://api.soundcloud"
                         + ".com/tracks/" + songId + "/download?client_id=" + client_id + "&oauth_token=" + token;
                 //Log.i("&&&&&&&&&", url);
-
                 MediaPlayer mediaPlayer = new MediaPlayer();
                 mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 mediaPlayer.setDataSource(url);
@@ -127,6 +141,26 @@ public class ListenerFragment extends Fragment {
                 Log.e("&&&&&&&", e.getLocalizedMessage());
             }
             return json;
+        }
+    }
+
+    public class BackgroundTaskButton extends AsyncTask<Void, Void, Void> {
+        protected Void doInBackground(Void... params) {
+            String song_id = "JUNK";
+            OkHttpClient client = new OkHttpClient();
+            String json = "{\"song_id\" : " + song_id + "}";
+            Log.i("&&&&&&&&&", "button pressed");
+            RequestBody body = RequestBody.create(JSON, json);
+            Request request = new Request.Builder()
+                    .url("http://104.236.76.46:8080/api/addSong")
+                    .post(body)
+                    .build();
+            try {
+                Response response = client.newCall(request).execute();
+                String r = response.body().string();
+            } catch (Exception e) {
+            }
+            return null;
         }
     }
 }
