@@ -51,7 +51,7 @@ app.get('/api/getQueue.json', function (request, response) {
 	json = '{[';
 	for (var i = 0; i < queue.length; i++) {
 		
-		json += queue[i];
+		json += "song_id: " + queue[i];
 		if (i + 1 < queue.length) json += ', ';
 	}
 	json += ']}';
