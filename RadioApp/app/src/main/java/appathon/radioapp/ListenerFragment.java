@@ -160,10 +160,11 @@ public class ListenerFragment extends Fragment {
                 jObj = new JSONObject(json);
                 //Log.i("&&&&&&&&&", "foo");
                 JSONArray jArray = jObj.getJSONArray("song_queue");
-                
+                if(jArray.length()>0){
                 for (int j = 0; j < jArray.length(); j++) {
-                    if (jArray.getString(j) != "0") {
-                        //songArray.add(jArray.getJSONObject(j));
+                    jObj=jArray.getJSONObject(j);
+                    songTitle=jObj.getString("song_title");
+                    songArray.add(songTitle);
                     }
                 }
 
