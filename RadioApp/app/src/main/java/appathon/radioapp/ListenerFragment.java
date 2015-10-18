@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
- * <p>
+ * <p/>
  * Use the {@link ListenerFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -76,63 +76,57 @@ public class ListenerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        String client_id;
-        String token;
-        String songId = "99508873";
         new BackgroundTask().execute();
-        try {
-//            Scanner readFile = new Scanner(new File("key.txt"));
-            InputStream is = getActivity().getAssets().open("key.txt");
-            byte[] buffer = new byte[is.available()];
-            is.read(buffer);
-            String file = new String(buffer);
-
-            String line = file.split("\n")[0]; //readFile.nextLine();
-            client_id=line;
-            line = file.split("\n")[1];//readFile.nextLine();
-            token=line;
-            String url = "https://api.soundcloud"
-                    + ".com/tracks/" + songId + "/download?client_id=" + client_id + "&oauth_token=" + token;
-            //Log.i("&&&&&&&&&", url);
-
-            MediaPlayer mediaPlayer = new MediaPlayer();
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.setDataSource(url);
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    mp.start();
-                    try {
-                        TimeUnit.SECONDS.sleep(1);
-                    } catch (Exception e) {
-                    }
-                    mp.seekTo(49000);
-                }
-            });
-            mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
-        } catch (Exception e) {
-            Log.e("&&&&&&&", e.getLocalizedMessage());
-        }
         return inflater.inflate(R.layout.fragment_listener, container, false);
     }
 
 
-    public class BackgroundTask extends AsyncTask<Void, Void, Void> {
+    public class BackgroundTask extends AsyncTask<Void, Void, String> {
         @Override
-        protected Void doInBackground(Void... params) {
-            JSONObject jObj;
+        protected String doInBackground(Void... params) {
+            String client_id;
+            String token;
+            String songId="";
+            String json = "";
             OkHttpClient client = new OkHttpClient();
             try {
                 Request request = new Request.Builder()
                         .url("http://104.236.76.46:8080/api/getCurrentSong.json")
                         .build();
                 Response response = client.newCall(request).execute();
-                String json=response.body().string();
+                json = response.body().string();
+//            Scanner readFile = new Scanner(new File("key.txt"));
+                InputStream is = getActivity().getAssets().open("key.txt");
+                byte[] buffer = new byte[is.available()];
+                is.read(buffer);
+                String file = new String(buffer);
+                String line = file.split("\n")[0]; //readFile.nextLine();
+                client_id = line;
+                line = file.split("\n")[1];//readFile.nextLine();
+                token = line;
+                String url = "https://api.soundcloud"
+                        + ".com/tracks/" + songId + "/download?client_id=" + client_id + "&oauth_token=" + token;
+                //Log.i("&&&&&&&&&", url);
 
+                MediaPlayer mediaPlayer = new MediaPlayer();
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                mediaPlayer.setDataSource(url);
+                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        mp.start();
+                        try {
+                            TimeUnit.SECONDS.sleep(1);
+                        } catch (Exception e) {
+                        }
+                        mp.seekTo(49000);
+                    }
+                });
+                mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
             } catch (Exception e) {
-                Log.e("Background task error", "Error ", e);
+                Log.e("&&&&&&&", e.getLocalizedMessage());
             }
-            return null;
+            return json;
         }
     }
 }
