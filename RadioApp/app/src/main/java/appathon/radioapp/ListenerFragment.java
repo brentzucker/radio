@@ -39,10 +39,10 @@ public class ListenerFragment extends Fragment {
     private ImageButton addSong;
     private String song_id;
     private String query;
-    String client_id;
+    private static String client_id;
     private EditText inputText;
     ArrayAdapter<String> adapter;
-    ArrayList<String> songArray = new ArrayList<>();
+    private static ArrayList<String> songArray = new ArrayList<>();
 
     /**
      * Use this factory method to create a new instance of
@@ -109,68 +109,21 @@ public class ListenerFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-            String token;
-            String songId;
-            String songTitle;
-            String json = "";
-            OkHttpClient client = new OkHttpClient();
-            try {
-                Request request = new Request.Builder()
-                        .url("http://104.236.76.46:8080/api/getCurrentSong.json")
-//                        .url("http://128.61.16.139:8080/api/getCurrentSong.json")
-                        .build();
-                Response response = client.newCall(request).execute();
-                json = response.body().string();
-                Log.i("json", json);
-                JSONObject jObj = new JSONObject(json);
-                songId = jObj.getString("song_id");
-                songTitle = jObj.getString("song_title");
-                Log.i("Song Title", songTitle);
-                if (songId != "0") {
-                    playtime = Integer.parseInt(jObj.getString("playback_time"));
-//              Scanner readFile = new Scanner(new File("key.txt"));
-                    InputStream is = getActivity().getAssets().open("key.txt");
-                    byte[] buffer = new byte[is.available()];
-                    is.read(buffer);
-                    String file = new String(buffer);
-                    String line = file.split("\n")[0]; //readFile.nextLine();
-                    client_id = line;
-                    //line = file.split("\n")[1];//readFile.nextLine();
-                    //token = line;
-                    String url = "http://api.soundcloud.com/tracks/"+songId+"/stream?client_id="+client_id;
-                    Log.i("&&&&&&&&&", url);
-                    MediaPlayer mediaPlayer = new MediaPlayer();
-                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                    mediaPlayer.setDataSource(url);
-                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-                            mp.start();
-                            mp.seekTo(playtime);
-                            Log.i("&&&&&&",Integer.toString(playtime));
-                        }
-                    });
-                    mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
-                }
-                request = new Request.Builder()
-                        .url("http://104.236.76.46:8080/api/getQueue.json")
-                        .build();
-                response = client.newCall(request).execute();
-                json = response.body().string();
-                jObj = new JSONObject(json);
-                Log.i("&&&&&&&&&", "foo");
-                JSONArray jArray = jObj.getJSONArray("song_queue");
-                if(jArray.length()>0){
-                for (int j = 0; j < jArray.length(); j++) {
-                    jObj=jArray.getJSONObject(j);
-                    songTitle=jObj.getString("song_title");
-                    songArray.add(songTitle);
-                    }
-                }
 
+            /* Get API Key */
+            try {
+                InputStream is = getActivity().getAssets().open("key.txt");
+                byte[] buffer = new byte[is.available()];
+                is.read(buffer);
+                String file = new String(buffer);
+                String line = file.split("\n")[0]; //readFile.nextLine();
+                client_id = line;
             } catch (Exception e) {
                 Log.e("&&&&&&&", e.getLocalizedMessage());
             }
+
+            playNextSong();
+
             return null;
         }
 
@@ -183,14 +136,18 @@ public class ListenerFragment extends Fragment {
     public class BackgroundTaskButton extends AsyncTask<Void, Void, Void> {
         protected Void doInBackground(Void... params) {
 
+            client_id = "eaa03445fd8b9ffacab3dd6856f936e2";
+
             /* Get Query from Text Box */
 
             Log.i("inputText", query);
 
-            /* Query Soundcloud: Get Id of Top Result */
-
             String soundcloud_query_url = "http://api.soundcloud.com/tracks.json?client_id=" + client_id + "&q=" + query +
                     "&limit=1";
+            Log.i("souncloud_query_url", soundcloud_query_url);
+
+            /* Query Soundcloud: Get Id of Top Result */
+
             String song_id = "0";
             String song_title = "";
             String json = "";
@@ -220,7 +177,8 @@ public class ListenerFragment extends Fragment {
             json = "{\"song_id\" : " + song_id + ", \"song_title\": \"" + song_title + "\"}";
             RequestBody body = RequestBody.create(JSON, json);
             Request request = new Request.Builder()
-                    .url("http://104.236.76.46:8080/api/addSong")
+//                    .url("http://104.236.76.46:8080/api/addSong")
+                    .url("http://128.61.16.139:8080/api/addSong")
                     .post(body)
                     .build();
             try {
@@ -228,12 +186,72 @@ public class ListenerFragment extends Fragment {
                 String r = response.body().string();
             } catch (Exception e) {
             }
+            
             return null;
         }
 
         @Override
         protected void onPostExecute(Void v) {
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    public static void playNextSong() {
+
+        final int playtime;
+        String token;
+        String songId = "0";
+        String songTitle;
+        String json = "";
+        OkHttpClient client = new OkHttpClient();
+        try {
+            Request request = new Request.Builder()
+//                        .url("http://104.236.76.46:8080/api/getCurrentSong.json")
+                    .url("http://128.61.16.139:8080/api/getCurrentSong.json")
+                    .build();
+            Response response = client.newCall(request).execute();
+            json = response.body().string();
+            Log.i("json", json);
+            JSONObject jObj = new JSONObject(json);
+            songId = jObj.getString("song_id");
+            songTitle = jObj.getString("song_title");
+            Log.i("Song Title", songTitle);
+            if (songId != "0") {
+                playtime = Integer.parseInt(jObj.getString("playback_time"));
+                String url = "http://api.soundcloud.com/tracks/" + songId + "/stream?client_id=" + client_id;
+                Log.i("&&&&&&&&&", url);
+                MediaPlayer mediaPlayer = new MediaPlayer();
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                mediaPlayer.setDataSource(url);
+                mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        mp.start();
+                        mp.seekTo(playtime);
+                        Log.i("&&&&&&", Integer.toString(playtime));
+                    }
+                });
+                mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
+            }
+            request = new Request.Builder()
+//                        .url("http://104.236.76.46:8080/api/getQueue.json")
+                    .url("http://128.61.16.139:8080/api/getQueue.json")
+                    .build();
+            response = client.newCall(request).execute();
+            json = response.body().string();
+            jObj = new JSONObject(json);
+            //Log.i("&&&&&&&&&", "foo");
+            JSONArray jArray = jObj.getJSONArray("song_queue");
+            if (jArray.length() > 0) {
+                for (int j = 0; j < jArray.length(); j++) {
+                    jObj = jArray.getJSONObject(j);
+                    songTitle = jObj.getString("song_title");
+                    songArray.add(songTitle);
+                }
+            }
+
+        } catch (Exception e) {
+            Log.e("&&&&&&&", e.getLocalizedMessage());
         }
     }
 }
