@@ -62,7 +62,7 @@ app.get('/api/getQueue.json', function (request, response) {
 	json = '{ \"song_queue\": [';
 	for (var i = 0; i < queue.length; i++) {
 		
-		json += queue[i];
+		json += '{ \"song_title\":' + queue[i].song_title + ', \"song_id\": ' + song_id + '}';
 		if (i + 1 < queue.length) json += ', ';
 	}
 	json += ']}';
@@ -76,6 +76,7 @@ app.get('/api/room/:room_name', function (request, response) {
 
 app.post('/api/addSong', function (request, response) {
 
+	console.log("add song");
 	var song_id = request.body.song_id;
 	var song_title = request.body.song_title;
 	response.sendStatus(song_title + " " + song_id);
