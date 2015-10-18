@@ -163,7 +163,7 @@ public class ListenerFragment extends Fragment {
                 
                 for (int j = 0; j < jArray.length(); j++) {
                     if (jArray.getString(j) != "0") {
-                        songArray.add(jArray.getJSONObject(j));
+                        //songArray.add(jArray.getJSONObject(j));
                     }
                 }
 
