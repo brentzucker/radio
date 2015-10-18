@@ -1,9 +1,11 @@
 package appathon.radioapp;
 
+import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 public class musicRoom extends AppCompatActivity {
 
@@ -11,6 +13,11 @@ public class musicRoom extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_room);
+
+        getFragmentManager()
+                .beginTransaction()
+                .add(android.R.id.content, new ListenerFragment())
+                .commit();
     }
 
     @Override
