@@ -18,9 +18,13 @@ import android.widget.Toast;
 import com.squareup.okhttp.*;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URL;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -152,9 +156,48 @@ public class ListenerFragment extends Fragment {
 
     public class BackgroundTaskButton extends AsyncTask<Void, Void, Void> {
         protected Void doInBackground(Void... params) {
-            //int song_id = 65234;
+
+            /* Read in Soundcloud API Key */
+            String key = "";
+            try {
+                InputStream is = getActivity().getAssets().open("key.txt");
+                byte[] buffer = new byte[is.available()];
+                is.read(buffer);
+                String file = new String(buffer);
+                String line = file.split("\n")[0]; //readFile.nextLine();
+                key = line;
+            } catch (IOException e) {
+            }
+
+            /* Get Query from Text Box */
+            String query = "atlanta";
+
+            /* Query Soundcloud: Get Id of Top Result */
+
+            String soundcloud_query_url = "http://api.soundcloud.com/tracks.json?client_id=" + key + "&q=" + query + "&limit=1";
+            String song_id = "0";
+            String json = "";
             OkHttpClient client = new OkHttpClient();
-            String json = "{\"song_id\" : " + song_id + "}";
+            try {
+                Request request = new Request.Builder()
+                        .url(soundcloud_query_url)
+                        .build();
+                Response response = client.newCall(request).execute();
+                json = response.body().string();
+                json = json.substring(1, json.length() - 1);
+                Log.i("json", json);
+                JSONObject jObj = new JSONObject(json);
+                song_id = jObj.getString("id");
+            } catch (Exception e) {
+                Log.e("Bad SoundCloud Request", e.getLocalizedMessage());
+            }
+
+            Log.i("song_id", "" + song_id);
+
+            /* Post Song Id to Queue */
+
+            client = new OkHttpClient();
+            json = "{\"song_id\" : " + song_id + "}";
             Log.i("&&&&&&&&&", "button pressed");
             RequestBody body = RequestBody.create(JSON, json);
             Request request = new Request.Builder()
