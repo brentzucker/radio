@@ -39,6 +39,7 @@ public class ListenerFragment extends Fragment {
     private Button addSong;
     private String song_id;
     private String query;
+    String client_id;
     private EditText inputText;
     ArrayAdapter<String> adapter;
     ArrayList<String> songArray = new ArrayList<>();
@@ -108,7 +109,6 @@ public class ListenerFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... params) {
-            String client_id;
             String token;
             String songId;
             String songTitle;
@@ -135,10 +135,9 @@ public class ListenerFragment extends Fragment {
                     String file = new String(buffer);
                     String line = file.split("\n")[0]; //readFile.nextLine();
                     client_id = line;
-                    line = file.split("\n")[1];//readFile.nextLine();
-                    token = line;
-                    String url = "https://api.soundcloud"
-                            + ".com/tracks/" + songId + "/download?client_id=" + client_id + "&oauth_token=" + token;
+                    //line = file.split("\n")[1];//readFile.nextLine();
+                    //token = line;
+                    String url = "http://api.soundcloud.com/tracks/"+songId+"/stream?client_id="+client_id;
                     Log.i("&&&&&&&&&", url);
                     MediaPlayer mediaPlayer = new MediaPlayer();
                     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -148,6 +147,7 @@ public class ListenerFragment extends Fragment {
                         public void onPrepared(MediaPlayer mp) {
                             mp.start();
                             mp.seekTo(playtime);
+                            Log.i("&&&&&&",Integer.toString(playtime));
                         }
                     });
                     mediaPlayer.prepareAsync(); // might take long! (for buffering, etc)
@@ -160,6 +160,7 @@ public class ListenerFragment extends Fragment {
                 jObj = new JSONObject(json);
                 //Log.i("&&&&&&&&&", "foo");
                 JSONArray jArray = jObj.getJSONArray("song_queue");
+                
                 for (int j = 0; j < jArray.length(); j++) {
                     if (jArray.getString(j) != "0") {
                         songArray.add(jArray.getString(j));
@@ -181,25 +182,14 @@ public class ListenerFragment extends Fragment {
     public class BackgroundTaskButton extends AsyncTask<Void, Void, Void> {
         protected Void doInBackground(Void... params) {
 
-            /* Read in Soundcloud API Key */
-            String key = "";
-            try {
-                InputStream is = getActivity().getAssets().open("key.txt");
-                byte[] buffer = new byte[is.available()];
-                is.read(buffer);
-                String file = new String(buffer);
-                String line = file.split("\n")[0]; //readFile.nextLine();
-                key = line;
-            } catch (IOException e) {
-            }
-
             /* Get Query from Text Box */
 
             Log.i("inputText", query);
 
             /* Query Soundcloud: Get Id of Top Result */
 
-            String soundcloud_query_url = "http://api.soundcloud.com/tracks.json?client_id=" + key + "&q=" + query + "&limit=1";
+            String soundcloud_query_url = "http://api.soundcloud.com/tracks.json?client_id=" + client_id + "&q=" + query +
+                    "&limit=1";
             String song_id = "0";
             String song_title = "";
             String json = "";
