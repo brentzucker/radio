@@ -5,18 +5,36 @@
              tools:context="appathon.radioapp.ListenerFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment"/>
     <EditText
-            android:layout_width="254dp"
+            android:layout_width="230dp"
             android:layout_height="wrap_content"
-            android:id="@+id/inputID" android:layout_gravity="left|top"/>
+            android:id="@+id/inputID" android:layout_gravity="left|top"
+        android:layout_marginTop="5dp" />
     <Button
-            android:layout_width="101dp"
-            android:layout_height="wrap_content"
+            android:layout_width="129dp"
+            android:layout_height="36dp"
             android:text="Add Song to queue"
-            android:id="@+id/addSong" android:layout_gravity="right|top"/>
+            android:id="@+id/addSong" android:layout_gravity="right|top"
+        android:background="#e6ae27"
+        android:textColor="#00223e"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+            android:layout_width="178dp"
+            android:layout_height="48dp"
+            android:text="@string/now_playing"
+            android:layout_below="@id/inputID"
+        android:layout_marginTop="48dp"
+        android:textColor="#00223e"
+        android:textSize="30sp"
+        android:layout_gravity="center_horizontal|top"
+        android:allowUndo="false" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Switch"
+        android:id="@+id/switch1"
+        android:layout_gravity="right|top" />
 
 </FrameLayout>
