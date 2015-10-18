@@ -1,40 +1,43 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="appathon.radioapp.ListenerFragment">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="appathon.radioapp.ListenerFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <EditText
-            android:layout_width="230dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/inputID" android:layout_gravity="left|top"
-        android:layout_marginTop="5dp" />
-    <Button
-            android:layout_width="129dp"
-            android:layout_height="36dp"
-            android:text="Add Song to queue"
-            android:id="@+id/addSong" android:layout_gravity="right|top"
-        android:background="#e6ae27"
-        android:textColor="#00223e"
-        android:layout_marginTop="5dp" />
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
 
+
+        <EditText
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/inputID" android:layout_gravity="left|top"
+                android:layout_marginTop="5dp"/>
+        <Button
+                android:layout_width="129dp"
+                android:layout_height="36dp"
+                android:text="Add Song to queue"
+                android:id="@+id/addSong" android:layout_gravity="right|top"
+                android:background="#e6ae27"
+                android:textColor="#00223e"
+                android:layout_marginTop="5dp"/>
+
+    </LinearLayout>
     <TextView
-            android:layout_width="178dp"
-            android:layout_height="48dp"
-            android:text="Now playing"
-            android:layout_below="@id/inputID"
-        android:layout_marginTop="48dp"
-        android:textColor="#00223e"
-        android:textSize="30sp"
-        android:layout_gravity="center_horizontal|top"
-        android:allowUndo="false" />
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:text="Now Playing"
+            android:layout_marginTop="0dp"
+            android:textColor="#00223e"
+            android:textSize="30sp"
+            android:layout_gravity="center_horizontal|top"
+            android:allowUndo="false"/>
+    <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/songList" android:layout_gravity="bottom|center"/>
+    <!-- TODO: Update blank fragment layout -->
 
-    <Switch
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Switch"
-        android:id="@+id/switch1"
-        android:layout_gravity="right|top" />
-
-</FrameLayout>
+</LinearLayout>
