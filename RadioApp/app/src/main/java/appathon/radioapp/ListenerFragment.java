@@ -170,7 +170,8 @@ public class ListenerFragment extends Fragment {
             }
 
             /* Get Query from Text Box */
-            String query = "atlanta";
+            String query = (inputText.getText()).toString();
+            Log.i("inputText", query);
 
             /* Query Soundcloud: Get Id of Top Result */
 
