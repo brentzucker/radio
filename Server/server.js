@@ -7,14 +7,40 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 	extended: true
 })); 
 
-var queue = [140314296]
+/* Song Variables */
+
+var queue = [140314296];
 var current_id = queue[0];
-var playback_time = 1;
+var start_time = 0;
+var playback_time = 0;
+duration = 0;
 
 app.get('/api/getCurrentSong.json', function (request, response) {
 
-	var curl_duration = getSongDuration(current_id);
-	// console.log(curl_duration);
+	var current_time = new Date().getTime();
+
+	// If new song, reset start time and get song duration
+	if (playback_time == 0) {
+		console.log('new song');
+		start_time = new Date().getTime();
+		getSongDuration(current_id);
+	}
+	console.log("duration: " + duration);
+
+	playback_time = current_time - start_time;
+	
+	// If the song is over get a new song
+	if (duration != 0 && playback_time >= duration) {
+
+		playback_time = 0;
+		queue.shift();
+
+		if (queue.length > 0) {
+			current_id = queue[0];
+		} else {
+			current_id = 111111111;
+		}
+	}
 	
 	json_string = '{ song_id: ' + current_id + ', playback_time: ' + playback_time + '}';
 	response.send(json_string);
@@ -46,7 +72,11 @@ app.post('/api/addSong', function (request, response) {
 	queue.push(song_id);
 });
 
+/* Run App */
+
 app.listen(8080);
+
+/* Helper Functions */
 
 function getSongDuration(song_id) {
 	
@@ -57,7 +87,6 @@ function getSongDuration(song_id) {
 		host: 'api.soundcloud.com',
 		path: '/tracks/' + song_id + '?client_id=' + key
 	};
-
 	
 	var req = http.request(options, function(res) {
 		res.setEncoding('utf8');
@@ -73,6 +102,7 @@ function getSongDuration(song_id) {
 
 			var obj = JSON.parse(data);
 			console.log(obj.duration);
+			duration = obj.duration;
 		});
 	});
 
