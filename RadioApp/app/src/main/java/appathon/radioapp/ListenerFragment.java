@@ -110,16 +110,21 @@ public class ListenerFragment extends Fragment {
             String client_id;
             String token;
             String songId;
+            String songTitle;
             String json = "";
             OkHttpClient client = new OkHttpClient();
             try {
                 Request request = new Request.Builder()
-                        .url("http://104.236.76.46:8080/api/getCurrentSong.json")
+//                        .url("http://104.236.76.46:8080/api/getCurrentSong.json")
+                        .url("http://128.61.16.139:8080/api/getCurrentSong.json")
                         .build();
                 Response response = client.newCall(request).execute();
                 json = response.body().string();
+                Log.i("json", json);
                 JSONObject jObj = new JSONObject(json);
                 songId = jObj.getString("song_id");
+                songTitle = jObj.getString("song_title");
+                Log.i("Song Title", songTitle);
 //              Scanner readFile = new Scanner(new File("key.txt"));
                 InputStream is = getActivity().getAssets().open("key.txt");
                 byte[] buffer = new byte[is.available()];
@@ -196,11 +201,12 @@ public class ListenerFragment extends Fragment {
             }
 
             Log.i("song_id", "" + song_id);
+            Log.i("song_title", "" + song_title);
 
             /* Post Song Id to Queue */
 
             client = new OkHttpClient();
-            json = "{\"song_id\" : " + song_id + ", \"song_title\": \"" + song_title + "\"hello}";
+            json = "{\"song_id\" : " + song_id + ", \"song_title\": \"" + song_title + "\"}";
             Log.i("&&&&&&&&&", "button pressed");
             RequestBody body = RequestBody.create(JSON, json);
             Request request = new Request.Builder()

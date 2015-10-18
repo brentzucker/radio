@@ -11,6 +11,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 var queue = [];
 var current_id = 000000000;
+var current_title = 'null';
 var start_time = 0;
 var playback_time = 0;
 duration = 0;
@@ -20,14 +21,16 @@ app.get('/api/getCurrentSong.json', function (request, response) {
 	var current_time = new Date().getTime();
 
 	// If new song, reset start time and get song duration
-	if (current_id == 000000000 || playback_time == 0) {
+	if (current_id == 000000000) {
 		console.log('new song');
 		start_time = new Date().getTime();
 
 		if (queue.length > 0) {
 			current_id = queue[0].song_id;
+			current_title = queue[0].song_title;
 		} else {
 			current_id = 000000000;
+			current_title = 'null';
 		}
 		getSongDuration(current_id);
 	}
@@ -43,12 +46,14 @@ app.get('/api/getCurrentSong.json', function (request, response) {
 
 		if (queue.length > 0) {
 			current_id = queue[0].song_id;
+			current_title = queue[0].song_title;
 		} else {
 			current_id = 000000000;
+			current_title = 'null';
 		}
 	}
 	
-	json_string = '{ song_id: ' + current_id + ', playback_time: ' + playback_time + '}';
+	json_string = '{song_title: \"' + current_title + '\", song_id: ' + current_id + ', playback_time: ' + playback_time + '}';
 	response.send(json_string);
 });
 
