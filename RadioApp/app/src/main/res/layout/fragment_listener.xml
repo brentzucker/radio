@@ -3,7 +3,8 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="appathon.radioapp.ListenerFragment">
+              tools:context="appathon.radioapp.ListenerFragment"
+              android:background="#e6ae27">
 
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
@@ -14,7 +15,9 @@
                 android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/inputID" android:layout_gravity="left|top"
-                android:layout_marginTop="5dp"/>
+                android:layout_marginTop="5dp"
+                android:background="#eeeeee"/>
+
         <Button
                 android:layout_width="129dp"
                 android:layout_height="36dp"
@@ -26,7 +29,7 @@
 
     </LinearLayout>
     <TextView
-            android:layout_width="36dp"
+            android:layout_width="202dp"
             android:layout_height="36dp"
             android:text="Now Playing"
             android:layout_marginTop="0dp"
