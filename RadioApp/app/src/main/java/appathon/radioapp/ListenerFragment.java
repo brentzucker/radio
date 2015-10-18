@@ -1,10 +1,7 @@
 package appathon.radioapp;
 
-import android.app.Activity;
-import android.app.VoiceInteractor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -16,13 +13,9 @@ import android.widget.*;
 import com.squareup.okhttp.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -45,6 +38,7 @@ public class ListenerFragment extends Fragment {
 
     private Button addSong;
     private String song_id;
+    private String query;
     private EditText inputText;
     ArrayAdapter<String> adapter;
     ArrayList<String> songArray = new ArrayList<>();
@@ -95,6 +89,7 @@ public class ListenerFragment extends Fragment {
                 //Log.i("&&&&&&&&&", "button pressed");
                 song_id = (inputText.getText()).toString();
                 //Log.i("entered string", song_id);
+                 query = (inputText.getText()).toString();
                 new BackgroundTaskButton().execute();
             }
         });
@@ -139,7 +134,7 @@ public class ListenerFragment extends Fragment {
                     token = line;
                     String url = "https://api.soundcloud"
                             + ".com/tracks/" + songId + "/download?client_id=" + client_id + "&oauth_token=" + token;
-                    //Log.i("&&&&&&&&&", url);
+                    Log.i("&&&&&&&&&", url);
                     MediaPlayer mediaPlayer = new MediaPlayer();
                     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     mediaPlayer.setDataSource(url);
@@ -180,11 +175,54 @@ public class ListenerFragment extends Fragment {
 
     public class BackgroundTaskButton extends AsyncTask<Void, Void, Void> {
         protected Void doInBackground(Void... params) {
-            //int song_id = 65234;
+
+            /* Read in Soundcloud API Key */
+            String key = "";
+            try {
+                InputStream is = getActivity().getAssets().open("key.txt");
+                byte[] buffer = new byte[is.available()];
+                is.read(buffer);
+                String file = new String(buffer);
+                String line = file.split("\n")[0]; //readFile.nextLine();
+                key = line;
+            } catch (IOException e) {
+            }
+
+            /* Get Query from Text Box */
+
+            Log.i("inputText", query);
+
+            /* Query Soundcloud: Get Id of Top Result */
+
+            String soundcloud_query_url = "http://api.soundcloud.com/tracks.json?client_id=" + key + "&q=" + query + "&limit=1";
+            String song_id = "0";
+            String song_title = "";
+            String json = "";
             OkHttpClient client = new OkHttpClient();
-            String json = "{\"song_id\" : " + song_id + "}";
-            songArray.add(song_id);
-            Log.i("&&&&&&&&&", "button pressed");
+
+            try {
+                Request request = new Request.Builder()
+                        .url(soundcloud_query_url)
+                        .build();
+                Response response = client.newCall(request).execute();
+                json = response.body().string();
+                json = json.substring(1, json.length() - 1);
+                Log.i("json", json);
+                JSONObject jObj = new JSONObject(json);
+                song_id = jObj.getString("id");
+                song_title = jObj.getString("title");
+            } catch (Exception e) {
+                Log.e("Bad SoundCloud Request", e.getLocalizedMessage());
+            }
+
+            Log.i("song_id", "" + song_id);
+
+            /* Post Song Id to Queue */
+
+            client = new OkHttpClient();
+            json = "{\"song_id\" : " + song_id + ", \"song_title\": \"" + song_title + "\"}";
+
+            //Log.i("&&&&&&&&&", "button pressed");
             RequestBody body = RequestBody.create(JSON, json);
             Request request = new Request.Builder()
                     .url("http://104.236.76.46:8080/api/addSong")
