@@ -48,7 +48,7 @@ app.get('/api/getCurrentSong.json', function (request, response) {
 
 app.get('/api/getQueue.json', function (request, response) {
 
-	json = '{ \"song_queue:\" [';
+	json = '{ \"song_queue\": [';
 	for (var i = 0; i < queue.length; i++) {
 		
 		json += queue[i];
