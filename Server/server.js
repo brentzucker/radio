@@ -7,13 +7,13 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 	extended: true
 })); 
 
-var queue = [193781466]
+var queue = [140314296]
 var current_id = queue[0];
 var playback_time = 1;
 
 app.get('/api/getCurrentSong.json', function (request, response) {
 
-	// var curl_duration = getSongDuration(current_id);
+	var curl_duration = getSongDuration(current_id);
 	// console.log(curl_duration);
 	
 	json_string = '{ song_id: ' + current_id + ', playback_time: ' + playback_time + '}';
@@ -39,7 +39,7 @@ app.get('/api/room/:room_name', function (request, response) {
 
 app.post('/api/addSong', function (request, response) {
 
-	var song_id = request.body.id;
+	var song_id = request.body.song_id;
 	response.sendStatus(song_id);
 	console.log(song_id);
 
@@ -58,27 +58,27 @@ function getSongDuration(song_id) {
 		path: '/tracks/' + song_id + '?client_id=' + key
 	};
 
+	
 	var req = http.request(options, function(res) {
+		res.setEncoding('utf8');
 		// console.log('STATUS: ' + res.statusCode);
 		// console.log('HEADERS: ' + JSON.stringify(res.headers));
-		res.setEncoding('utf8');
+
+		var data = '';
 		res.on('data', function (chunk) {
-			console.log('BODY: ' + chunk);
+			data += chunk;
+		});
 
-			json_obj = JSON.parse(chunk);
-			console.log(json_obj['duration']);
+		res.on('end', function() {
 
-			// console.log(chunk);
-			// return chunk;
+			var obj = JSON.parse(data);
+			console.log(obj.duration);
 		});
 	});
 
 	req.on('error', function(e) {
 		console.log('problem with request: ' + e.message);
 	});
-
-	// write data to request body
-	req.write('data\n');
-	req.write('data\n');
+	
 	req.end();
 }
