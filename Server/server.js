@@ -9,8 +9,8 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 
 /* Song Variables */
 
-var queue = [140314296];
-var current_id = queue[0];
+var queue = [];
+var current_id = 000000000;
 var start_time = 0;
 var playback_time = 0;
 duration = 0;
@@ -20,9 +20,15 @@ app.get('/api/getCurrentSong.json', function (request, response) {
 	var current_time = new Date().getTime();
 
 	// If new song, reset start time and get song duration
-	if (playback_time == 0) {
+	if (current_id == 000000000 || playback_time == 0) {
 		console.log('new song');
 		start_time = new Date().getTime();
+
+		if (queue.length > 0) {
+			current_id = queue[0].song_id;
+		} else {
+			current_id = 000000000;
+		}
 		getSongDuration(current_id);
 	}
 	console.log("duration: " + duration);
@@ -36,9 +42,9 @@ app.get('/api/getCurrentSong.json', function (request, response) {
 		queue.shift();
 
 		if (queue.length > 0) {
-			current_id = queue[0];
+			current_id = queue[0].song_id;
 		} else {
-			current_id = 111111111;
+			current_id = 000000000;
 		}
 	}
 	
@@ -66,10 +72,11 @@ app.get('/api/room/:room_name', function (request, response) {
 app.post('/api/addSong', function (request, response) {
 
 	var song_id = request.body.song_id;
-	response.sendStatus(song_id);
-	console.log(song_id);
+	var song_title = request.body.song_title;
+	response.sendStatus(song_title + " " + song_id);
+	console.log(song_title + " " + song_id);
 
-	queue.push(song_id);
+	queue.push({'song_id': song_id, 'song_title': song_title});
 });
 
 /* Run App */

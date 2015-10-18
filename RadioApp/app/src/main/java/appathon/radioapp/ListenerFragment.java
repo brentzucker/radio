@@ -177,6 +177,7 @@ public class ListenerFragment extends Fragment {
 
             String soundcloud_query_url = "http://api.soundcloud.com/tracks.json?client_id=" + key + "&q=" + query + "&limit=1";
             String song_id = "0";
+            String song_title = "";
             String json = "";
             OkHttpClient client = new OkHttpClient();
             try {
@@ -189,6 +190,7 @@ public class ListenerFragment extends Fragment {
                 Log.i("json", json);
                 JSONObject jObj = new JSONObject(json);
                 song_id = jObj.getString("id");
+                song_title = jObj.getString("title");
             } catch (Exception e) {
                 Log.e("Bad SoundCloud Request", e.getLocalizedMessage());
             }
@@ -198,11 +200,12 @@ public class ListenerFragment extends Fragment {
             /* Post Song Id to Queue */
 
             client = new OkHttpClient();
-            json = "{\"song_id\" : " + song_id + "}";
+            json = "{\"song_id\" : " + song_id + ", \"song_title\": \"" + song_title + "\"hello}";
             Log.i("&&&&&&&&&", "button pressed");
             RequestBody body = RequestBody.create(JSON, json);
             Request request = new Request.Builder()
-                    .url("http://104.236.76.46:8080/api/addSong")
+//                    .url("http://104.236.76.46:8080/api/addSong")
+                    .url("http://128.61.16.139:8080/api/addSong")
                     .post(body)
                     .build();
             try {
