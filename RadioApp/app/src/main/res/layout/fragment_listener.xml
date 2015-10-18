@@ -22,7 +22,7 @@
     <TextView
             android:layout_width="178dp"
             android:layout_height="48dp"
-            android:text="@string/now_playing"
+            android:text="Now playing"
             android:layout_below="@id/inputID"
         android:layout_marginTop="48dp"
         android:textColor="#00223e"
