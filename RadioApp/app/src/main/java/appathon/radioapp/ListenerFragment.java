@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 import com.squareup.okhttp.*;
 import org.json.JSONObject;
@@ -43,6 +44,8 @@ public class ListenerFragment extends Fragment {
     private String mParam2;
 
     private Button addSong;
+    private String song_id;
+    private EditText inputText;
 
     /**
      * Use this factory method to create a new instance of
@@ -80,12 +83,15 @@ public class ListenerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_listener, container, false);
+        inputText = (EditText) rootView.findViewById(R.id.inputID);
         addSong = (Button) rootView.findViewById(R.id.addSong);
         addSong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(getActivity(), "click",Toast.LENGTH_LONG).show();
                 //Log.i("&&&&&&&&&", "button pressed");
+                song_id = (inputText.getText()).toString();
+                Log.i("entered string", song_id);
                 new BackgroundTaskButton().execute();
             }
         });
@@ -146,7 +152,7 @@ public class ListenerFragment extends Fragment {
 
     public class BackgroundTaskButton extends AsyncTask<Void, Void, Void> {
         protected Void doInBackground(Void... params) {
-            String song_id = "JUNK";
+            //int song_id = 65234;
             OkHttpClient client = new OkHttpClient();
             String json = "{\"song_id\" : " + song_id + "}";
             Log.i("&&&&&&&&&", "button pressed");

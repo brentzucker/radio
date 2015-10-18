@@ -9,10 +9,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/hello_blank_fragment"/>
+    <EditText
+            android:layout_width="254dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/inputID" android:layout_gravity="left|top"/>
     <Button
-            android:layout_width="266dp"
+            android:layout_width="101dp"
             android:layout_height="wrap_content"
             android:text="Add Song to queue"
-            android:id="@+id/addSong" android:layout_gravity="left|top"/>
+            android:id="@+id/addSong" android:layout_gravity="right|top"/>
 
 </FrameLayout>
