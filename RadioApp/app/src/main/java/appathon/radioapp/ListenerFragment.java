@@ -92,7 +92,9 @@ public class ListenerFragment extends Fragment {
                 song_id = (inputText.getText()).toString();
                 //Log.i("entered string", song_id);
                 query = (inputText.getText()).toString();
-                new BackgroundTaskButton().execute();
+                if(song_id!="") {
+                    new BackgroundTaskButton().execute();
+                }
             }
         });
         //songArray.add("asdf");
@@ -171,15 +173,16 @@ public class ListenerFragment extends Fragment {
                 String r = response.body().string();
             } catch (Exception e) {
             }
+            if (emptyQueue) {
+                playNextSong();
+            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void v) {
             adapter.notifyDataSetChanged();
-            if (emptyQueue) {
-                playNextSong();
-            }
+
         }
     }
 
@@ -233,6 +236,7 @@ public class ListenerFragment extends Fragment {
             jObj = new JSONObject(json);
             //Log.i("&&&&&&&&&", "foo");
             JSONArray jArray = jObj.getJSONArray("song_queue");
+            songArray.clear();
             if (jArray.length() > 0) {
                 for (int j = 0; j < jArray.length(); j++) {
                     jObj = jArray.getJSONObject(j);
