@@ -1,2 +1,4 @@
 express
+nodemon
+body-parser
 nodeunit
