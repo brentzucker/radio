@@ -62,7 +62,7 @@ app.get('/api/getQueue.json', function (request, response) {
 	json = '{ \"song_queue\": [';
 	for (var i = 0; i < queue.length; i++) {
 		
-		json += '{ \"song_title\": ' + (queue[i].song_id == 0 ? "null" : queue[i].song_title) + ', \"song_id\": ' + queue[i].song_id + '}';
+		json += '{ \"song_title\": \"' + (queue[i].song_id == 0 ? "null" : queue[i].song_title) + '\", \"song_id\": ' + queue[i].song_id + '}';
 		if (i + 1 < queue.length) json += ', ';
 	}
 	json += ']}';
