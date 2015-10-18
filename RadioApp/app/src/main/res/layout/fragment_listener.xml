@@ -2,39 +2,38 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
+             android:background="#e6ae27"
              tools:context="appathon.radioapp.ListenerFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <EditText
-            android:layout_width="230dp"
+            android:layout_width="222dp"
             android:layout_height="wrap_content"
             android:id="@+id/inputID" android:layout_gravity="left|top"
-        android:layout_marginTop="5dp" />
+            android:layout_marginTop="10dp"
+            android:background="#eeeeee"
+        android:layout_marginLeft="6dp" />
+
     <Button
-            android:layout_width="129dp"
+            android:layout_width="116dp"
             android:layout_height="36dp"
             android:text="Add Song to queue"
             android:id="@+id/addSong" android:layout_gravity="right|top"
-        android:background="#e6ae27"
-        android:textColor="#00223e"
-        android:layout_marginTop="5dp" />
+        android:background="#00223e"
+        android:textColor="#e6ae27"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="8dp" />
 
     <TextView
-            android:layout_width="178dp"
-            android:layout_height="48dp"
+            android:layout_width="369dp"
+            android:layout_height="79dp"
             android:text="@string/now_playing"
             android:layout_below="@id/inputID"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="40dp"
         android:textColor="#00223e"
-        android:textSize="30sp"
-        android:layout_gravity="center_horizontal|top"
-        android:allowUndo="false" />
-
-    <Switch
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Switch"
-        android:id="@+id/switch1"
-        android:layout_gravity="right|top" />
+        android:textSize="44sp"
+        android:layout_gravity="left|top"
+        android:allowUndo="false"
+        android:layout_marginLeft="4dp" />
 
 </FrameLayout>
